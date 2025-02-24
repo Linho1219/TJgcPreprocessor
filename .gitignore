@@ -1,3 +1,7 @@
+# Inputs/Outputs
+output/
+source/
+
 # Logs
 logs
 *.log

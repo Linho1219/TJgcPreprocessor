@@ -1,0 +1,25 @@
+---
+BasedOnStyle: GNU
+AccessModifierOffset: -4
+AlignConsecutiveMacros:
+  PadOperators: true
+AlignEscapedNewlines: Left
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakAfterDefinitionReturnType: None
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Allman
+ColumnLimit: 0
+Cpp11BracedListStyle: true
+IndentCaseLabels: true
+IndentWidth: 4
+SpaceBeforeParens: ControlStatements
+Standard: c++11
+Language: Cpp
+AllowAllConstructorInitializersOnNextLine: false
+AlwaysBreakAfterReturnType: None
+KeepEmptyLinesAtTheStartOfBlocks: false
+SpacesInParentheses: false
