@@ -7,12 +7,17 @@ import { execSync } from "node:child_process";
 const SourceDir = "./source";
 const OutputDir = "./output";
 const ClangConfigPath = "./scripts/.clang-format";
+/** 在运行 clang-format 前执行的替换；正则会自动添加 `g` 标志 */
 const ExtraReplaces: [RegExp, string][] = [
   [/\\\n/, ""], // 处理续行符
-  [/(\/\/.+)?\n?\s*(>>|<<)\s*\n?/, " $2 "], // 处理 cin/cout 额外折行
+  [/((\/\/.*)?\n)?\s*(>>|<<)/, " $3 "], // 处理 <</>> 前额外折行
+  [/(?<!\/\/.*)(>>|<<)\s*\n/, " $1 "], // 处理 <</>> 后额外折行
+  [/(?<!\/\/.*(>>|<<).*)\/\/.*\n/, ""], // 处理 <</>> 后单行注释
 ];
-const FormatBasenames: string[] = ["cpp", "cc", "c"]; // 处理的文件后缀名
-const CopyBasenames: string[] = []; // 直接复制的文件后缀名
+/** 处理的文件后缀名 */
+const FormatBasenames: string[] = ["cpp", "cc", "c"];
+/** 直接复制的文件后缀名 */
+const CopyBasenames: string[] = [];
 
 function readFile(inputPath: string) {
   const data = fs.readFileSync(inputPath);
@@ -54,7 +59,7 @@ function processDir(
   depth = 0
 ) {
   if (depth > maxDepth) return;
-  if(!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
   fs.readdirSync(inputDir, { withFileTypes: true }).forEach((dirent) => {
     const { name } = dirent;
     const currentPath = path.join(inputDir, name);
