@@ -36,10 +36,14 @@ function formatCode(code: string, configPath = ClangConfigPath) {
     const reg = new RegExp(pattern, "g");
     return acc.replaceAll(reg, replacement);
   }, code);
-  return execSync(`clang-format -style=file:${configPath}`, {
-    input: code,
-    encoding: "utf-8",
-  }).toString();
+  return (
+    PrefixContent.join("\n") +
+    "\n" +
+    execSync(`clang-format -style=file:${configPath}`, {
+      input: code,
+      encoding: "utf-8",
+    }).toString()
+  );
 }
 
 function processFile(inputPath: string, outputPath: string) {
