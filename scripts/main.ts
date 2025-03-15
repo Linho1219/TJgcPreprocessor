@@ -58,7 +58,8 @@ function processDir(
   depth = 0
 ) {
   if (depth > maxDepth) return;
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+  if (fs.existsSync(outputDir)) fs.rmSync(outputDir, { recursive: true });
+  fs.mkdirSync(outputDir);
   fs.readdirSync(inputDir, { withFileTypes: true }).forEach((dirent) => {
     const { name } = dirent;
     const currentPath = path.join(inputDir, name);
