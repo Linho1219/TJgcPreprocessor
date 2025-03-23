@@ -12,7 +12,6 @@
 
 - 检测源码编码，将其转换为 GBK
 - 处理行尾，将其转换为 CRLF
-- 将 `cin/cout` 的多行 `<<`、`>>` 转为单行（使用正则实现）
 - 按要求处理换行（包括花括号前换行、每行一句等）
 
 同时可以配置：
@@ -22,28 +21,86 @@
 - 直接复制到输出到文件扩展名
 - 在文件开头加入指定内容（学号姓名等）
 
-配置文件位于 `scripts/config.ts`。
-
-你也可以在 `scripts` 目录下找到 `.clang-format` 并自行取用。
+使用 JSON5 书写配置文件。配置文件路径可以自定义。
 
 ## 快速开始
 
 确保你已安装 Node.js。你可以在控制台输入 `node -v` 检查，如果输出版本号则表明成功安装。
 
-安装依赖：
+执行下面命令：
 
 ```sh
 npm i
+npm tsc
+npm i . -g
 ```
 
-在项目的 `source` 目录下放置待处理的项目。在控制台输入
+现在，你可以在任何地方使用它了：
 
 ```sh
-npm start
+tjformat -h
 ```
 
-则处理结果输出至 `source` 目录。
+输出
 
-输入输出目录可在 `scripts/main.ts` 中修改。
+```
+Usage: main [options] <sourceDir>
 
-此项目是跨平台的。
+Options:
+  -o, --outputDir <outputDir>    Output directory (default: "./output")
+  -d, --depth <depth>            Max depth of directories (default: "3")
+  -c, --configPath <configPath>  Config file written in JSON5 (default: "tjformat.json5")
+  -h, --help                     display help for command
+```
+
+**必须提供**一个以 JSON5 格式书写的配置文件。定义为：
+
+```ts
+interface Config {
+  /** 额外正则替换 */
+  ExtraReplaces: [string, string][];
+  /** 需要格式化的文件后缀名 */
+  FormatBasenames: string[];
+  /** 需要直接复制的文件后缀名 */
+  CopyBasenames: string[];
+  /** 代码前缀行 */
+  PrefixContent: string[];
+  /** 是否替换宏定义 */
+  ReplaceMacro: true;
+}
+```
+
+例如：
+
+```json5
+{
+  ExtraReplaces: [
+    ["\\\\\\n/", ""], // 处理续行符
+    ["((\\/\\/.*)?\\n)?\\s*(>>|<<)/", " $3 "], // 处理 <</>> 前额外折行
+    ["(?<!\\/\\/.*)(>>|<<)\\s*\\n/", " $1 "], // 处理 <</>> 后额外折行
+    ["(?<!\\/\\/.*(>>|<<).*)\\/\\/.*\\n/", ""], // 处理 <</>> 后单行注释
+  ],
+  FormatBasenames: ["cpp", "c", "h"],
+  CopyBasenames: [],
+  PrefixContent: ["/* 2459999 电信 张三 */"],
+  ReplaceMacro: true,
+}
+```
+
+假设将其存放在 `tjconfig.json5`，则可以使用：
+
+```sh
+tjformat .
+```
+
+格式化当前目录下的源文件。
+
+完整命令示例：
+
+```sh
+tjformat ./source -o ./out -c config.json5 -d 5
+```
+
+> [!tip]
+>
+> 如果你觉得慢，那没办法，Node 是这样的。
