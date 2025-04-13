@@ -2,6 +2,10 @@
 
 如果需要直接开始，请转到 [快速开始](#快速开始)。
 
+> [!warning]
+>
+> 此项目由于 Node.js 的执行效率问题，已使用 Powershell 脚本重写并合入 [TJGCWorkbench](https://github.com/Linho1219/TJGCWorkbench)，故现停止维护。
+
 > [!caution]
 >
 > 不保证本项目输出结果一定符合要求。请自行检查输出结果。使用本项目直接或间接导致失分的，项目作者概不负责。
